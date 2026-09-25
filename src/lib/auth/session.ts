@@ -3,7 +3,9 @@ import "server-only";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 
+import { HOME_PATH } from "@/lib/auth/redirect";
 import { createClient } from "@/lib/supabase/server";
+import type { Enums } from "@/types/database";
 
 /**
  * Perfil del usuario autenticado, o null. Memoizado por petición: se puede
@@ -28,5 +30,12 @@ export const getCurrentProfile = cache(async () => {
 export async function requireProfile() {
   const profile = await getCurrentProfile();
   if (!profile) redirect("/login");
+  return profile;
+}
+
+/** Exige sesión y un rol concreto; si el rol no coincide, vuelve a /inicio. */
+export async function requireRole(role: Enums<"user_role">) {
+  const profile = await requireProfile();
+  if (profile.role !== role) redirect(HOME_PATH);
   return profile;
 }

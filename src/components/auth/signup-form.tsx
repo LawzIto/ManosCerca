@@ -4,7 +4,7 @@ import { HardHat, House } from "lucide-react";
 import Link from "next/link";
 import { useActionState } from "react";
 
-import { FieldError, FormAlert } from "@/components/auth/form-message";
+import { FieldError, FormAlert } from "@/components/form-message";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

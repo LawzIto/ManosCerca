@@ -61,6 +61,7 @@ supabase/
 
 - **Seguridad en la BD, no en el cliente.** Toda regla de acceso vive en políticas RLS. Los campos sensibles (rol, verificación, rating, estados) no se pueden actualizar directamente: los estados cambian solo con las RPC `accept_proposal(p_proposal_id)` y `update_request_status(p_request_id, p_status)`.
 - **Cambios de esquema**: a partir de ahora, cada cambio va en una migración nueva (`npx supabase migration new <nombre>`); no reescribas `schema.sql`. Después, actualiza `src/types/database.ts`.
+- `service_requests` y `proposals` tienen **dos** FKs entre sí (`proposals.request_id` y `service_requests.accepted_proposal_id`). Al embeber, especifica siempre la FK: `proposals!proposals_request_id_fkey(...)`; si no, PostgREST responde `PGRST201`.
 - Crea un cliente de Supabase nuevo por petición en el servidor. En el proxy usa `auth.getClaims()`; nunca confíes en `getSession()` en el servidor.
 - Para leer datos, prefiere Server Components; para mutaciones, Server Actions o React Query con el cliente de navegador. Para Realtime, suscríbete desde el cliente e invalida las queries de React Query.
 - Identificadores de código y de BD en inglés (`snake_case` en SQL, `camelCase` en TS, `PascalCase` en componentes). Los textos visibles y los valores de estado del dominio van en español.
