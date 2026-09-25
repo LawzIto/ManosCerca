@@ -42,6 +42,15 @@ supabase/
   config.toml           configuración del CLI de Supabase
 ```
 
+## Autenticación
+
+- Correo + contraseña con Supabase Auth. Server Actions en `src/lib/auth/actions.ts` (`signIn`, `signUp`, `signOut`) validadas con Zod (`src/lib/auth/schemas.ts`); los formularios usan `useActionState`.
+- El registro envía `role`, `full_name` y `phone` en `options.data`; el trigger `handle_new_user` crea el perfil.
+- `/auth/confirm` procesa los enlaces de correo (`token_hash` o `code`). Toda redirección con `next` pasa por `safeNextPath()`.
+- En Server Components usa `getCurrentProfile()` / `requireProfile()` de `src/lib/auth/session.ts` (memoizados por petición).
+- `src/proxy.ts`: sin sesión, las rutas no públicas redirigen a `/login?next=…`; con sesión, `/`, `/login` y `/registro` redirigen a `/inicio`.
+- Rutas: `(auth)/` agrupa las pantallas públicas de acceso; `(app)/` agrupa las privadas.
+
 ## Modelo de datos
 
 - `profiles` (1:1 con `auth.users`, se crea por trigger al registrarse; `role` = `client | professional | admin` tomado de `raw_user_meta_data.role`, nunca admin).
