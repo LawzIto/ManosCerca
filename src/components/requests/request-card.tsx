@@ -14,12 +14,12 @@ export type RequestCardData = Pick<
   proposals: { count: number }[];
 };
 
-export function RequestCard({ request }: { request: RequestCardData }) {
+export function RequestCard({ request, href }: { request: RequestCardData; href?: string }) {
   const proposalCount = request.proposals[0]?.count ?? 0;
 
   return (
     <Link
-      href={`/solicitudes/${request.id}`}
+      href={href ?? `/solicitudes/${request.id}`}
       className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50"
     >
       <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-muted">

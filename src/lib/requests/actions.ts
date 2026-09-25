@@ -66,3 +66,43 @@ export async function cancelServiceRequest(requestId: string): Promise<{ error?:
   revalidatePath(`/solicitudes/${requestId}`);
   return {};
 }
+
+export async function acceptProposal(
+  proposalId: string,
+  requestId: string,
+): Promise<{ error?: string }> {
+  await requireRole("client");
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("accept_proposal", { p_proposal_id: proposalId });
+
+  if (error) {
+    console.error("acceptProposal", error);
+    return { error: "No se pudo aceptar la cotización. Es posible que ya no esté disponible." };
+  }
+
+  revalidatePath("/solicitudes");
+  revalidatePath(`/solicitudes/${requestId}`);
+  return {};
+}
+
+/** El profesional asignado inicia o completa el trabajo. */
+export async function updateJobStatus(
+  requestId: string,
+  status: "en_progreso" | "completado",
+): Promise<{ error?: string }> {
+  await requireRole("professional");
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("update_request_status", {
+    p_request_id: requestId,
+    p_status: status,
+  });
+
+  if (error) {
+    console.error("updateJobStatus", error);
+    return { error: "No se pudo actualizar el estado del trabajo." };
+  }
+
+  revalidatePath("/trabajos/mios");
+  revalidatePath(`/trabajos/${requestId}`);
+  return {};
+}

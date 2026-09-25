@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 import { CategoryIcon } from "@/components/category-icon";
 import { REQUEST_CARD_COLUMNS, RequestCard } from "@/components/requests/request-card";
@@ -8,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { requireProfile } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
-import type { Tables } from "@/types/database";
 
 export const metadata: Metadata = { title: "Inicio" };
 
@@ -16,6 +16,7 @@ const ROLE_LABELS = { client: "Cliente", professional: "Profesional", admin: "Ad
 
 export default async function HomePage() {
   const profile = await requireProfile();
+  if (profile.role === "professional") redirect("/trabajos");
   const firstName = profile.full_name.split(" ")[0];
 
   return (
@@ -27,25 +28,19 @@ export default async function HomePage() {
         <Badge variant="secondary">{ROLE_LABELS[profile.role]}</Badge>
       </header>
 
-      {profile.role === "client" ? (
-        <ClientHome profile={profile} />
-      ) : (
-        <p className="text-muted-foreground">
-          Pronto verás aquí las solicitudes de servicio cerca de ti.
-        </p>
-      )}
+      {profile.role === "client" && <ClientHome clientId={profile.id} />}
     </>
   );
 }
 
-async function ClientHome({ profile }: { profile: Tables<"profiles"> }) {
+async function ClientHome({ clientId }: { clientId: string }) {
   const supabase = await createClient();
   const [{ data: categories }, { data: requests }] = await Promise.all([
     supabase.from("categories").select("id, slug, name").order("sort_order"),
     supabase
       .from("service_requests")
       .select(REQUEST_CARD_COLUMNS)
-      .eq("client_id", profile.id)
+      .eq("client_id", clientId)
       .order("created_at", { ascending: false })
       .limit(3),
   ]);

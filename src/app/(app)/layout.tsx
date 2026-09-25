@@ -1,9 +1,13 @@
 import Link from "next/link";
 
+import { AppNav } from "@/components/app-nav";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { HOME_PATH } from "@/lib/auth/redirect";
+import { requireProfile } from "@/lib/auth/session";
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const profile = await requireProfile();
+
   return (
     <>
       <header className="sticky top-0 z-10 border-b bg-background/90 backdrop-blur">
@@ -13,6 +17,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </Link>
           <SignOutButton />
         </div>
+        <AppNav role={profile.role} />
       </header>
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-6">
         {children}

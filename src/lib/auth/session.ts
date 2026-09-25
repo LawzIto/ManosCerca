@@ -8,6 +8,13 @@ import { createClient } from "@/lib/supabase/server";
 import type { Enums } from "@/types/database";
 
 /**
+ * Columnas de `profiles` legibles por la API. `phone` no está: es privado
+ * (ver migración protect_phone); usar las RPC get_my_phone / get_request_contact.
+ */
+export const PROFILE_COLUMNS =
+  "id, role, full_name, avatar_url, bio, verification_status, rating_avg, rating_count, created_at, updated_at" as const;
+
+/**
  * Perfil del usuario autenticado, o null. Memoizado por petición: se puede
  * llamar desde varios Server Components sin repetir consultas.
  */
@@ -19,7 +26,7 @@ export const getCurrentProfile = cache(async () => {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("*")
+    .select(PROFILE_COLUMNS)
     .eq("id", userId)
     .single();
 

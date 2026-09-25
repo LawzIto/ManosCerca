@@ -127,7 +127,7 @@ export function RequestForm({
           id="address"
           name="address"
           autoComplete="street-address"
-          placeholder="Calle, número, distrito y referencia"
+          placeholder="Calle o carrera, número, barrio y referencia"
           required
           defaultValue={values?.address}
           aria-invalid={Boolean(errors?.address)}
@@ -169,10 +169,10 @@ export function RequestForm({
           id="budgetEstimate"
           name="budgetEstimate"
           type="number"
-          inputMode="decimal"
+          inputMode="numeric"
           min={0}
-          step="0.01"
-          placeholder="Opcional"
+          step="1000"
+          placeholder="Opcional, ej.: 80000"
           defaultValue={values?.budgetEstimate}
           aria-invalid={Boolean(errors?.budgetEstimate)}
           aria-describedby="budgetEstimate-error"

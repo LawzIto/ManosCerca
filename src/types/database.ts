@@ -245,6 +245,14 @@ export type Database = {
         };
         Returns: ServiceRequestRow;
       };
+      get_my_phone: {
+        Args: Record<PropertyKey, never>;
+        Returns: string | null;
+      };
+      get_request_contact: {
+        Args: { p_request_id: string };
+        Returns: { full_name: string; phone: string | null }[];
+      };
       current_role_is: {
         Args: { target: Database["public"]["Enums"]["user_role"] };
         Returns: boolean;

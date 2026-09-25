@@ -1,11 +1,11 @@
 /** Configuración regional de la app. Cambiar aquí para otro país. */
-export const LOCALE = "es-PE";
-export const CURRENCY = "PEN";
+export const LOCALE = "es-CO";
+export const CURRENCY = "COP";
 
 const currencyFormatter = new Intl.NumberFormat(LOCALE, {
   style: "currency",
   currency: CURRENCY,
-  maximumFractionDigits: 2,
+  maximumFractionDigits: 0,
   minimumFractionDigits: 0,
 });
 

@@ -50,6 +50,7 @@ supabase/
 - En Server Components usa `getCurrentProfile()` / `requireProfile()` de `src/lib/auth/session.ts` (memoizados por petición).
 - `src/proxy.ts`: sin sesión, las rutas no públicas redirigen a `/login?next=…`; con sesión, `/`, `/login` y `/registro` redirigen a `/inicio`.
 - Rutas: `(auth)/` agrupa las pantallas públicas de acceso; `(app)/` agrupa las privadas.
+- Por rol: el cliente usa `/inicio` y `/solicitudes/**`; el profesional, `/trabajos` (disponibles), `/trabajos/mios` y `/trabajos/[id]`. Protege cada página con `requireRole()`.
 
 ## Modelo de datos
 
@@ -60,10 +61,13 @@ supabase/
 ## Convenciones
 
 - **Seguridad en la BD, no en el cliente.** Toda regla de acceso vive en políticas RLS. Los campos sensibles (rol, verificación, rating, estados) no se pueden actualizar directamente: los estados cambian solo con las RPC `accept_proposal(p_proposal_id)` y `update_request_status(p_request_id, p_status)`.
-- **Cambios de esquema**: a partir de ahora, cada cambio va en una migración nueva (`npx supabase migration new <nombre>`); no reescribas `schema.sql`. Después, actualiza `src/types/database.ts`.
+- **Cambios de esquema**: cada cambio va en una migración nueva en `supabase/migrations/` (`npx supabase migration new <nombre>`); no reescribas `schema.sql`. Después, actualiza `src/types/database.ts`. Por ahora las migraciones se aplican a mano en el SQL Editor: avisa al usuario cuando haya una nueva.
+- **`profiles.phone` es privado**: no se puede leer por la API (`select("*")` sobre `profiles` falla). Usa `PROFILE_COLUMNS` de `src/lib/auth/session.ts`, y las RPC `get_my_phone()` y `get_request_contact(p_request_id)` para el teléfono.
 - `service_requests` y `proposals` tienen **dos** FKs entre sí (`proposals.request_id` y `service_requests.accepted_proposal_id`). Al embeber, especifica siempre la FK: `proposals!proposals_request_id_fkey(...)`; si no, PostgREST responde `PGRST201`.
 - Crea un cliente de Supabase nuevo por petición en el servidor. En el proxy usa `auth.getClaims()`; nunca confíes en `getSession()` en el servidor.
-- Para leer datos, prefiere Server Components; para mutaciones, Server Actions o React Query con el cliente de navegador. Para Realtime, suscríbete desde el cliente e invalida las queries de React Query.
+- Para leer datos, prefiere Server Components; para mutaciones, Server Actions. Los botones de acción usan `<ActionButton action={accion.bind(null, id)} />`, que se encarga de la confirmación, el estado pendiente y el toast.
+- Tiempo real: `<RealtimeRefresh channel subscriptions />` hace `router.refresh()` cuando cambian las filas suscritas (Realtime respeta RLS). React Query queda para estado de servidor puramente cliente.
+- Región: Colombia. Moneda COP sin decimales; formatea con `formatCurrency` de `src/lib/format.ts`.
 - Identificadores de código y de BD en inglés (`snake_case` en SQL, `camelCase` en TS, `PascalCase` en componentes). Los textos visibles y los valores de estado del dominio van en español.
 - Archivos en `kebab-case.tsx`. Importa con el alias `@/`. Nada de `any`: usa los tipos de `@/types/database` (`Tables<"proposals">`, `Enums<"request_status">`).
 - Diseña mobile-first; la app se usa principalmente en el teléfono.

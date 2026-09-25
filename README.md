@@ -7,7 +7,7 @@ Plataforma on-demand para pedir técnicos del hogar (plomeros, cerrajeros, elect
 ## Puesta en marcha
 
 1. Instala dependencias: `npm install`
-2. Crea un proyecto en [Supabase](https://supabase.com) y ejecuta `supabase/schema.sql` en el **SQL Editor**.
+2. Crea un proyecto en [Supabase](https://supabase.com) y, en el **SQL Editor**, ejecuta `supabase/schema.sql` y luego cada archivo de `supabase/migrations/` en orden.
 3. Copia `.env.example` a `.env.local` y completa la URL y la publishable key del proyecto.
 4. Arranca: `npm run dev` → http://localhost:3000
 
