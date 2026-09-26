@@ -50,7 +50,9 @@ supabase/
 - En Server Components usa `getCurrentProfile()` / `requireProfile()` de `src/lib/auth/session.ts` (memoizados por petición).
 - `src/proxy.ts`: sin sesión, las rutas no públicas redirigen a `/login?next=…`; con sesión, `/`, `/login` y `/registro` redirigen a `/inicio`.
 - Rutas: `(auth)/` agrupa las pantallas públicas de acceso; `(app)/` agrupa las privadas.
-- Por rol: el cliente usa `/inicio` y `/solicitudes/**`; el profesional, `/trabajos` (disponibles), `/trabajos/mios` y `/trabajos/[id]`. Protege cada página con `requireRole()`.
+- Por rol: el cliente usa `/inicio` y `/solicitudes/**`; el profesional, `/trabajos` (disponibles), `/trabajos/mios` y `/trabajos/[id]`. Ambos: `/perfil` (datos, foto, especialidades, reseñas) e `/historial` (completados y estadísticas vía RPC `get_my_stats()`). Protege cada página con `requireRole()`.
+- Calificaciones: `<ReviewSection>` aparece en el detalle cuando el servicio está `completado`; `submitReview` inserta en `reviews` (RLS valida participantes) y el trigger recalcula el rating.
+- Foto de perfil: bucket público `avatars` de Storage, ruta `<uid>/avatar`; el cliente la reduce a 512px WebP antes de enviarla. Especialidades: RPC `set_my_categories(p_category_ids)`.
 
 ## Modelo de datos
 

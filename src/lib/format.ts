@@ -34,3 +34,15 @@ export function formatRelativeTime(date: string | Date, now = new Date()) {
   }
   return "hace un momento";
 }
+
+const dateFormatter = new Intl.DateTimeFormat(LOCALE, {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  timeZone: "America/Bogota",
+});
+
+/** "25 sept 2026" */
+export function formatDate(date: string | Date) {
+  return dateFormatter.format(new Date(date));
+}

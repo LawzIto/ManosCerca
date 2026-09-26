@@ -253,6 +253,14 @@ export type Database = {
         Args: { p_request_id: string };
         Returns: { full_name: string; phone: string | null }[];
       };
+      set_my_categories: {
+        Args: { p_category_ids: number[] };
+        Returns: undefined;
+      };
+      get_my_stats: {
+        Args: Record<PropertyKey, never>;
+        Returns: { completed_count: number; total_amount: number; month_amount: number }[];
+      };
       current_role_is: {
         Args: { target: Database["public"]["Enums"]["user_role"] };
         Returns: boolean;

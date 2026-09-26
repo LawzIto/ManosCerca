@@ -8,6 +8,7 @@ import { ActionButton } from "@/components/action-button";
 import { RealtimeRefresh } from "@/components/realtime-refresh";
 import { ContactCard } from "@/components/requests/contact-card";
 import { RequestSummary } from "@/components/requests/request-summary";
+import { ReviewSection } from "@/components/reviews/review-section";
 import { requireRole } from "@/lib/auth/session";
 import { formatCurrency } from "@/lib/format";
 import { acceptProposal, cancelServiceRequest } from "@/lib/requests/actions";
@@ -26,7 +27,7 @@ export default async function RequestDetailPage({ params }: PageProps<"/solicitu
   const { data: request, error } = await supabase
     .from("service_requests")
     .select(
-      `id, title, description, address, budget_estimate, status, created_at,
+      `id, title, description, address, budget_estimate, status, created_at, professional_id,
        category:categories(slug, name),
        proposals!proposals_request_id_fkey(
          id, price, message, eta_minutes, status, created_at,
@@ -68,6 +69,14 @@ export default async function RequestDetailPage({ params }: PageProps<"/solicitu
       <RequestSummary request={request} />
 
       <ContactCard requestId={request.id} title="Tu profesional" />
+
+      {request.status === "completado" && request.professional_id && (
+        <ReviewSection
+          requestId={request.id}
+          userId={profile.id}
+          counterpartName={proposals[0]?.professional?.full_name || "el profesional"}
+        />
+      )}
 
       <section className="space-y-3">
         <h2 className="font-semibold">

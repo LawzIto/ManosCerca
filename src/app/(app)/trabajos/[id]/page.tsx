@@ -9,6 +9,7 @@ import { ProposalForm } from "@/components/proposals/proposal-form";
 import { RealtimeRefresh } from "@/components/realtime-refresh";
 import { ContactCard } from "@/components/requests/contact-card";
 import { RequestSummary } from "@/components/requests/request-summary";
+import { ReviewSection } from "@/components/reviews/review-section";
 import { requireRole } from "@/lib/auth/session";
 import { formatCurrency } from "@/lib/format";
 import { withdrawProposal } from "@/lib/proposals/actions";
@@ -77,7 +78,15 @@ export default async function JobDetailPage({ params }: PageProps<"/trabajos/[id
       )}
 
       {isAssignedToMe ? (
-        <AssignedJobActions jobId={job.id} status={job.status} />
+        job.status === "completado" ? (
+          <ReviewSection
+            requestId={job.id}
+            userId={profile.id}
+            counterpartName={job.client?.full_name || "el cliente"}
+          />
+        ) : (
+          <AssignedJobActions jobId={job.id} status={job.status} />
+        )
       ) : myProposal?.status === "pendiente" ? (
         <section className="space-y-3 rounded-lg border p-4">
           <div className="flex items-start justify-between gap-3">
@@ -128,13 +137,6 @@ export default async function JobDetailPage({ params }: PageProps<"/trabajos/[id
 }
 
 function AssignedJobActions({ jobId, status }: { jobId: string; status: Enums<"request_status"> }) {
-  if (status === "completado") {
-    return (
-      <p className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
-        Trabajo completado. ¡Buen trabajo!
-      </p>
-    );
-  }
   if (status === "cancelado") {
     return (
       <p className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">

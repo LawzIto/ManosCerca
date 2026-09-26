@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  experimental: {
+    serverActions: {
+      // La foto de perfil (máx. 2 MB, ver AVATAR_MAX_BYTES) viaja en el FormData.
+      bodySizeLimit: "3mb",
+    },
+  },
 };
 
 export default nextConfig;
