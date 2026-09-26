@@ -24,3 +24,12 @@ export type ProfileFormState = {
   fieldErrors?: Partial<Record<string, string[]>>;
   values?: Record<string, string>;
 };
+
+/** Radios ofrecidos en el formulario de zona de trabajo (km). */
+export const WORK_RADIUS_OPTIONS = [2, 5, 10, 20, 50] as const;
+
+export const workAreaSchema = z.object({
+  latitude: z.coerce.number("Agrega tu ubicación").min(-90).max(90),
+  longitude: z.coerce.number("Agrega tu ubicación").min(-180).max(180),
+  radiusKm: z.coerce.number().int().min(1).max(100),
+});

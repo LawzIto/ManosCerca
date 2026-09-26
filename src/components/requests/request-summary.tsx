@@ -2,13 +2,16 @@ import { MapPin, Wallet } from "lucide-react";
 
 import { CategoryIcon } from "@/components/category-icon";
 import { StatusBadge } from "@/components/requests/status-badge";
-import { formatCurrency, formatRelativeTime } from "@/lib/format";
+import { formatCurrency, formatDistance, formatRelativeTime } from "@/lib/format";
 import type { Tables } from "@/types/database";
 
 type Request = Pick<
   Tables<"service_requests">,
   "title" | "description" | "address" | "budget_estimate" | "status" | "created_at"
-> & { category: Pick<Tables<"categories">, "slug" | "name"> | null };
+> &
+  Partial<Pick<Tables<"service_requests">, "distance_km">> & {
+    category: Pick<Tables<"categories">, "slug" | "name"> | null;
+  };
 
 /** Encabezado y datos de una solicitud; común a las vistas de cliente y profesional. */
 export function RequestSummary({ request }: { request: Request }) {
@@ -33,7 +36,15 @@ export function RequestSummary({ request }: { request: Request }) {
         <p className="whitespace-pre-line break-words">{request.description}</p>
         <p className="flex items-start gap-2 text-muted-foreground">
           <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden />
-          {request.address}
+          <span>
+            {request.address}
+            {request.distance_km != null && (
+              <span className="font-medium text-foreground">
+                {" "}
+                · {formatDistance(request.distance_km)} de tu zona
+              </span>
+            )}
+          </span>
         </p>
         {request.budget_estimate != null && (
           <p className="flex items-center gap-2 text-muted-foreground">

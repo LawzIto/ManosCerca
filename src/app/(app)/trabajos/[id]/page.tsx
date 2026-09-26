@@ -31,7 +31,7 @@ export default async function JobDetailPage({ params }: PageProps<"/trabajos/[id
   const { data: job, error } = await supabase
     .from("service_requests")
     .select(
-      `id, title, description, address, budget_estimate, status, created_at, professional_id,
+      `id, title, description, address, budget_estimate, status, created_at, professional_id, distance_km,
        category:categories(slug, name),
        client:profiles!service_requests_client_id_fkey(full_name, rating_avg, rating_count),
        proposals!proposals_request_id_fkey(id, price, message, eta_minutes, status)`,

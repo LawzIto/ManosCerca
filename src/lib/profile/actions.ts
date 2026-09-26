@@ -10,6 +10,7 @@ import {
   categoriesSchema,
   profileSchema,
   type ProfileFormState,
+  workAreaSchema,
 } from "@/lib/profile/schemas";
 import { createClient } from "@/lib/supabase/server";
 
@@ -92,4 +93,30 @@ export async function updateMyCategories(
   revalidatePath("/perfil");
   revalidatePath("/trabajos");
   return { success: "Especialidades actualizadas" };
+}
+
+export async function updateWorkArea(
+  _prev: ProfileFormState,
+  formData: FormData,
+): Promise<ProfileFormState> {
+  const parsed = workAreaSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    return { fieldErrors: z.flattenError(parsed.error).fieldErrors };
+  }
+
+  const profile = await requireRole("professional");
+  const { latitude, longitude, radiusKm } = parsed.data;
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("work_areas")
+    .upsert({ professional_id: profile.id, latitude, longitude, radius_km: radiusKm });
+
+  if (error) {
+    console.error("updateWorkArea", error);
+    return { error: "No pudimos guardar tu zona de trabajo. Intenta de nuevo." };
+  }
+
+  revalidatePath("/perfil");
+  revalidatePath("/trabajos", "layout");
+  return { success: "Zona de trabajo actualizada" };
 }

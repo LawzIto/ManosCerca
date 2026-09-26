@@ -46,3 +46,11 @@ const dateFormatter = new Intl.DateTimeFormat(LOCALE, {
 export function formatDate(date: string | Date) {
   return dateFormatter.format(new Date(date));
 }
+
+const kilometersFormatter = new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 1 });
+
+/** "a 800 m", "a 2,3 km". */
+export function formatDistance(km: number) {
+  if (km < 1) return `a ${Math.max(100, Math.round((km * 1000) / 100) * 100)} m`;
+  return `a ${kilometersFormatter.format(km)} km`;
+}

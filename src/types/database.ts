@@ -91,8 +91,40 @@ export type Database = {
           },
         ];
       };
+      work_areas: {
+        Row: {
+          professional_id: string;
+          latitude: number;
+          longitude: number;
+          radius_km: number;
+          updated_at: string;
+        };
+        Insert: {
+          professional_id: string;
+          latitude: number;
+          longitude: number;
+          radius_km?: number;
+        };
+        Update: {
+          latitude?: number;
+          longitude?: number;
+          radius_km?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "work_areas_professional_id_fkey";
+            columns: ["professional_id"];
+            isOneToOne: true;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       service_requests: {
-        Row: ServiceRequestRow;
+        Row: ServiceRequestRow & {
+          /** Campo calculado: distancia desde la zona de trabajo de quien consulta. */
+          distance_km: number | null;
+        };
         Insert: {
           id?: string;
           client_id: string;
@@ -260,6 +292,24 @@ export type Database = {
       get_my_stats: {
         Args: Record<PropertyKey, never>;
         Returns: { completed_count: number; total_amount: number; month_amount: number }[];
+      };
+      distance_between_km: {
+        Args: { lat1: number; lon1: number; lat2: number; lon2: number };
+        Returns: number;
+      };
+      distance_km: {
+        Args: { "": Database["public"]["Tables"]["service_requests"]["Row"] };
+        Returns: number | null;
+      };
+      get_nearby_requests: {
+        Args: { p_category_ids?: number[] };
+        Returns: ServiceRequestRow[];
+        SetofOptions: {
+          from: "*";
+          to: "service_requests";
+          isOneToOne: false;
+          isSetofReturn: true;
+        };
       };
       current_role_is: {
         Args: { target: Database["public"]["Enums"]["user_role"] };

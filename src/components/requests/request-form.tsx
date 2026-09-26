@@ -1,7 +1,7 @@
 "use client";
 
 import { LoaderCircle, LocateFixed, MapPinCheck } from "lucide-react";
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 
 import { CategoryIcon } from "@/components/category-icon";
 import { FieldError, FormAlert } from "@/components/form-message";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useGeolocation } from "@/hooks/use-geolocation";
 import { CURRENCY } from "@/lib/format";
 import { createServiceRequest } from "@/lib/requests/actions";
 import type { RequestFormState } from "@/lib/requests/schemas";
@@ -16,12 +17,6 @@ import { useLocationStore } from "@/stores/location-store";
 import type { Tables } from "@/types/database";
 
 type Category = Pick<Tables<"categories">, "id" | "slug" | "name">;
-
-const GEO_ERRORS: Record<number, string> = {
-  1: "Permite el acceso a tu ubicación para usar esta opción.",
-  2: "No pudimos obtener tu ubicación.",
-  3: "La ubicación tardó demasiado. Intenta de nuevo.",
-};
 
 export function RequestForm({
   categories,
@@ -38,28 +33,7 @@ export function RequestForm({
   const values = state.values;
 
   const { coords, setCoords } = useLocationStore();
-  const [locating, setLocating] = useState(false);
-  const [geoError, setGeoError] = useState<string>();
-
-  function locate() {
-    if (!("geolocation" in navigator)) {
-      setGeoError("Tu navegador no permite obtener la ubicación.");
-      return;
-    }
-    setLocating(true);
-    setGeoError(undefined);
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: { latitude, longitude } }) => {
-        setCoords({ latitude, longitude });
-        setLocating(false);
-      },
-      (error) => {
-        setGeoError(GEO_ERRORS[error.code] ?? GEO_ERRORS[2]);
-        setLocating(false);
-      },
-      { enableHighAccuracy: true, timeout: 10_000 },
-    );
-  }
+  const { locate, locating, error: geoError } = useGeolocation(setCoords);
 
   const selectedCategory = values?.categoryId ?? defaultCategoryId?.toString();
 
@@ -159,7 +133,8 @@ export function RequestForm({
           {coords ? "Ubicación agregada" : "Usar mi ubicación actual"}
         </Button>
         <p className="text-xs text-muted-foreground">
-          {geoError ?? "Opcional. Ayuda a que te encuentren profesionales cercanos."}
+          {geoError ??
+            "Recomendado: los profesionales ven primero las solicitudes cercanas a su zona."}
         </p>
       </div>
 

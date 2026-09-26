@@ -3,12 +3,12 @@ import Link from "next/link";
 
 import { CategoryIcon } from "@/components/category-icon";
 import { Badge } from "@/components/ui/badge";
-import { formatCurrency, formatRelativeTime } from "@/lib/format";
+import { formatCurrency, formatDistance, formatRelativeTime } from "@/lib/format";
 import type { Tables } from "@/types/database";
 
 export type JobCardData = Pick<
   Tables<"service_requests">,
-  "id" | "title" | "address" | "budget_estimate" | "created_at"
+  "id" | "title" | "address" | "budget_estimate" | "created_at" | "distance_km"
 > & {
   category: Pick<Tables<"categories">, "slug" | "name"> | null;
   /** Por RLS, solo contiene la cotización del propio profesional (si existe). */
@@ -17,7 +17,7 @@ export type JobCardData = Pick<
 
 /** Columnas para `.select()` que coinciden con `JobCardData`. */
 export const JOB_CARD_COLUMNS =
-  "id, title, address, budget_estimate, created_at, category:categories(slug, name), proposals!proposals_request_id_fkey(status)" as const;
+  "id, title, address, budget_estimate, created_at, distance_km, category:categories(slug, name), proposals!proposals_request_id_fkey(status)" as const;
 
 export function JobCard({ job }: { job: JobCardData }) {
   const quoted = job.proposals.some((proposal) => proposal.status === "pendiente");
@@ -37,6 +37,11 @@ export function JobCard({ job }: { job: JobCardData }) {
         </span>
         <span className="flex items-center gap-1 truncate text-xs text-muted-foreground">
           <MapPin className="size-3 shrink-0" aria-hidden />
+          {job.distance_km != null && (
+            <span className="shrink-0 font-medium text-foreground">
+              {formatDistance(job.distance_km)} ·
+            </span>
+          )}
           <span className="truncate">{job.address}</span>
         </span>
         <span className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">

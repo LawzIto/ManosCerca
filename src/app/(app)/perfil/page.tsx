@@ -4,6 +4,7 @@ import { CategoriesForm } from "@/components/profile/categories-form";
 import { ProfileForm } from "@/components/profile/profile-form";
 import { StatsGrid } from "@/components/profile/stats-grid";
 import { UserAvatar } from "@/components/profile/user-avatar";
+import { WorkAreaForm } from "@/components/profile/work-area-form";
 import { RatingSummary, Stars } from "@/components/reviews/stars";
 import { Badge } from "@/components/ui/badge";
 import { requireProfile } from "@/lib/auth/session";
@@ -19,7 +20,7 @@ export default async function ProfilePage() {
   const isProfessional = profile.role === "professional";
   const supabase = await createClient();
 
-  const [phoneResult, reviewsResult, categoriesResult, mineResult] = await Promise.all([
+  const [phoneResult, reviewsResult, categoriesResult, mineResult, workAreaResult] = await Promise.all([
     supabase.rpc("get_my_phone"),
     supabase
       .from("reviews")
@@ -35,11 +36,20 @@ export default async function ProfilePage() {
     isProfessional
       ? supabase.from("professional_categories").select("category_id").eq("professional_id", profile.id)
       : null,
+    isProfessional
+      ? supabase
+          .from("work_areas")
+          .select("latitude, longitude, radius_km")
+          .eq("professional_id", profile.id)
+          .maybeSingle()
+      : null,
   ]);
 
   if (reviewsResult.error) throw reviewsResult.error;
   if (categoriesResult?.error) throw categoriesResult.error;
   if (mineResult?.error) throw mineResult.error;
+  if (workAreaResult?.error) throw workAreaResult.error;
+  const workArea = workAreaResult?.data;
 
   return (
     <>
@@ -87,6 +97,28 @@ export default async function ProfilePage() {
           <CategoriesForm
             categories={categoriesResult.data}
             selectedIds={mineResult.data.map((row) => row.category_id)}
+          />
+        </section>
+      )}
+
+      {isProfessional && (
+        <section id="zona" className="scroll-mt-4 space-y-3">
+          <div>
+            <h2 className="font-semibold">Zona de trabajo</h2>
+            <p className="text-sm text-muted-foreground">
+              Te mostraremos las solicitudes dentro de esta distancia.
+            </p>
+          </div>
+          <WorkAreaForm
+            defaults={
+              workArea
+                ? {
+                    latitude: workArea.latitude,
+                    longitude: workArea.longitude,
+                    radiusKm: workArea.radius_km,
+                  }
+                : null
+            }
           />
         </section>
       )}
