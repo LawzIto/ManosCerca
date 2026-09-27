@@ -59,6 +59,7 @@ supabase/
 - `profiles` (1:1 con `auth.users`, se crea por trigger al registrarse; `role` = `client | professional | admin` tomado de `raw_user_meta_data.role`, nunca admin).
 - `categories`, `professional_categories` (especialidades de cada profesional).
 - `work_areas` (zona de trabajo privada del profesional: punto + `radius_km`). `/trabajos` usa la RPC `get_nearby_requests(p_category_ids)` (dentro del radio + las que no tienen ubicación) y el campo calculado `distance_km` de `service_requests` (se pide como columna: `.select("…, distance_km")`; null sin zona o sin coordenadas).
+- `notifications`: solo las insertan triggers de la BD (nueva solicitud en la zona, cotización, cambios de estado, reseña); el usuario solo puede actualizar `read_at` o borrar. `<NotificationListener>` en el layout muestra un toast y refresca; la campana muestra las no leídas. Para un evento nuevo, amplía el enum `notification_type` y el trigger correspondiente.
 - `service_requests` → `proposals` (una por profesional y solicitud) → `reviews` (una por participante y solicitud; un trigger actualiza `profiles.rating_avg/rating_count`).
 
 ## Convenciones

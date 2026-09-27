@@ -120,6 +120,37 @@ export type Database = {
           },
         ];
       };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          type: Database["public"]["Enums"]["notification_type"];
+          title: string;
+          body: string | null;
+          link: string | null;
+          request_id: string | null;
+          read_at: string | null;
+          created_at: string;
+        };
+        Insert: never;
+        Update: { read_at?: string | null };
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "notifications_request_id_fkey";
+            columns: ["request_id"];
+            isOneToOne: false;
+            referencedRelation: "service_requests";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       service_requests: {
         Row: ServiceRequestRow & {
           /** Campo calculado: distancia desde la zona de trabajo de quien consulta. */
@@ -321,6 +352,15 @@ export type Database = {
       verification_status: "unverified" | "pending" | "verified" | "rejected";
       request_status: "pendiente" | "aceptado" | "en_progreso" | "completado" | "cancelado";
       proposal_status: "pendiente" | "aceptada" | "rechazada" | "retirada";
+      notification_type:
+        | "solicitud_cercana"
+        | "cotizacion_nueva"
+        | "cotizacion_aceptada"
+        | "cotizacion_rechazada"
+        | "servicio_iniciado"
+        | "servicio_completado"
+        | "servicio_cancelado"
+        | "resena_recibida";
     };
     CompositeTypes: { [_ in never]: never };
   };
