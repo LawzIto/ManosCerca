@@ -5,6 +5,7 @@ import { ProfileForm } from "@/components/profile/profile-form";
 import { StatsGrid } from "@/components/profile/stats-grid";
 import { UserAvatar } from "@/components/profile/user-avatar";
 import { WorkAreaForm } from "@/components/profile/work-area-form";
+import { PushToggle } from "@/components/push/push-toggle";
 import { RatingSummary, Stars } from "@/components/reviews/stars";
 import { Badge } from "@/components/ui/badge";
 import { requireProfile } from "@/lib/auth/session";
@@ -122,6 +123,11 @@ export default async function ProfilePage() {
           />
         </section>
       )}
+
+      <section className="space-y-3">
+        <h2 className="font-semibold">Notificaciones</h2>
+        <PushToggle />
+      </section>
 
       <section className="space-y-3">
         <h2 className="font-semibold">Reseñas recibidas</h2>

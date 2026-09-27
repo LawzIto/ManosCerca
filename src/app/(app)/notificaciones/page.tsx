@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 
 import { ActionButton } from "@/components/action-button";
 import { NotificationIcon } from "@/components/notifications/notification-icon";
+import { PushToggle } from "@/components/push/push-toggle";
 import { requireProfile } from "@/lib/auth/session";
 import { formatRelativeTime } from "@/lib/format";
 import { markAllNotificationsRead, openNotification } from "@/lib/notifications/actions";
@@ -39,6 +40,8 @@ export default async function NotificationsPage() {
           </ActionButton>
         )}
       </header>
+
+      <PushToggle variant="prompt" />
 
       {notifications.length > 0 ? (
         <ul className="flex flex-col gap-2">
