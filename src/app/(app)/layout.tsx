@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { AppNav } from "@/components/app-nav";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { BrandLogo } from "@/components/brand";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { NotificationListener } from "@/components/notifications/notification-listener";
 import { UserAvatar } from "@/components/profile/user-avatar";
@@ -21,10 +22,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <>
       <NotificationListener userId={profile.id} />
-      <header className="sticky top-0 z-10 border-b bg-background/90 backdrop-blur">
-        <div className="mx-auto flex h-14 w-full max-w-2xl items-center justify-between px-4">
-          <Link href={HOME_PATH} className="text-lg font-bold tracking-tight">
-            ManosCerca
+      <header className="sticky top-0 z-10 border-b border-[#EAF2FF] bg-white/95 backdrop-blur shadow-[0_2px_12px_rgba(6,34,68,0.03)]">
+        <div className="mx-auto flex h-16 w-full max-w-2xl items-center justify-between px-4">
+          <Link href={HOME_PATH} className="flex items-center" aria-label="ManosCerca">
+            <BrandLogo variant="horizontal" color="color" className="h-8 w-auto min-w-[120px]" priority />
           </Link>
           <div className="flex items-center gap-1">
             <NotificationBell unread={unread ?? 0} />

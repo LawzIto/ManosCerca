@@ -89,23 +89,29 @@ export function ProfileForm({ defaults, showBio }: { defaults: Defaults; showBio
   const name = values?.fullName ?? defaults.fullName;
 
   return (
-    <form action={formAction} className="flex flex-col gap-4" noValidate>
+    <form action={formAction} className="flex flex-col gap-5" noValidate>
       {state.error && <FormAlert variant="error">{state.error}</FormAlert>}
 
       <div className="flex items-center gap-4">
-        <UserAvatar name={name} url={preview ?? defaults.avatarUrl} className="size-20" fallbackClassName="text-2xl" />
-        <div className="flex flex-col gap-1">
+        <UserAvatar
+          name={name}
+          url={preview ?? defaults.avatarUrl}
+          className="size-20 ring-4 ring-[#EAF2FF]"
+          fallbackClassName="text-2xl"
+        />
+        <div className="flex flex-col gap-1.5">
           <Button
             type="button"
             variant="outline"
             size="sm"
+            className="rounded-full border-2 border-[#062244] text-[#062244] hover:bg-[#EAF2FF] font-semibold"
             onClick={() => fileInput.current?.click()}
             disabled={processing}
           >
-            <Camera aria-hidden />
+            <Camera className="size-4" aria-hidden />
             {processing ? "Procesando…" : preview || defaults.avatarUrl ? "Cambiar foto" : "Subir foto"}
           </Button>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-[#5B6B7F]">
             {preview ? "Guarda los cambios para actualizarla." : "JPG, PNG o WebP."}
           </p>
           <input
@@ -124,7 +130,7 @@ export function ProfileForm({ defaults, showBio }: { defaults: Defaults; showBio
       <FieldError id="avatar-error" messages={errors?.avatar} />
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="fullName">Nombre completo</Label>
+        <Label htmlFor="fullName" className="font-medium text-[#062244]">Nombre completo</Label>
         <Input
           id="fullName"
           name="fullName"
@@ -133,13 +139,13 @@ export function ProfileForm({ defaults, showBio }: { defaults: Defaults; showBio
           defaultValue={name}
           aria-invalid={Boolean(errors?.fullName)}
           aria-describedby="fullName-error"
-          className="h-10"
+          className="h-12"
         />
         <FieldError id="fullName-error" messages={errors?.fullName} />
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="phone">Teléfono</Label>
+        <Label htmlFor="phone" className="font-medium text-[#062244]">Teléfono</Label>
         <Input
           id="phone"
           name="phone"
@@ -150,9 +156,9 @@ export function ProfileForm({ defaults, showBio }: { defaults: Defaults; showBio
           defaultValue={values?.phone ?? defaults.phone}
           aria-invalid={Boolean(errors?.phone)}
           aria-describedby="phone-error"
-          className="h-10"
+          className="h-12"
         />
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-[#5B6B7F]">
           Solo lo ve la otra parte mientras un servicio está activo.
         </p>
         <FieldError id="phone-error" messages={errors?.phone} />
@@ -160,7 +166,7 @@ export function ProfileForm({ defaults, showBio }: { defaults: Defaults; showBio
 
       {showBio && (
         <div className="flex flex-col gap-2">
-          <Label htmlFor="bio">Sobre ti</Label>
+          <Label htmlFor="bio" className="font-medium text-[#062244]">Sobre ti</Label>
           <Textarea
             id="bio"
             name="bio"
@@ -170,12 +176,18 @@ export function ProfileForm({ defaults, showBio }: { defaults: Defaults; showBio
             defaultValue={values?.bio ?? defaults.bio}
             aria-invalid={Boolean(errors?.bio)}
             aria-describedby="bio-error"
+            className="min-h-24"
           />
           <FieldError id="bio-error" messages={errors?.bio} />
         </div>
       )}
 
-      <Button type="submit" size="lg" className="h-11" disabled={pending || processing}>
+      <Button
+        type="submit"
+        size="default"
+        className="w-full text-base font-semibold shadow-sm"
+        disabled={pending || processing}
+      >
         {pending ? "Guardando…" : "Guardar cambios"}
       </Button>
     </form>

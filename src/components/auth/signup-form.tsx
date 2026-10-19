@@ -47,10 +47,12 @@ export function SignUpForm({ defaultRole }: { defaultRole?: "client" | "professi
                 defaultChecked={(values?.role || defaultRole || "client") === value}
                 className="peer sr-only"
               />
-              <span className="flex h-full flex-col gap-1 rounded-lg border p-3 transition-colors peer-checked:border-primary peer-checked:bg-primary/5 peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50">
-                <Icon className="size-5" aria-hidden />
-                <span className="text-sm font-medium">{label}</span>
-                <span className="text-xs text-muted-foreground">{hint}</span>
+              <span className="flex h-full flex-col gap-1.5 rounded-2xl border border-[#EAF2FF] bg-[#F3F6FA] p-3.5 transition-all peer-checked:border-[#0165F0] peer-checked:bg-[#EAF2FF] peer-checked:shadow-xs peer-focus-visible:ring-2 peer-focus-visible:ring-[#0165F0]/30">
+                <span className="flex size-8 items-center justify-center rounded-xl bg-white text-[#062244] shadow-2xs">
+                  <Icon className="size-4" aria-hidden />
+                </span>
+                <span className="text-sm font-semibold text-[#062244]">{label}</span>
+                <span className="text-xs text-[#5B6B7F]">{hint}</span>
               </span>
             </label>
           ))}
@@ -60,7 +62,7 @@ export function SignUpForm({ defaultRole }: { defaultRole?: "client" | "professi
 
       {FIELDS.map((field) => (
         <div key={field.name} className="flex flex-col gap-2">
-          <Label htmlFor={field.name}>{field.label}</Label>
+          <Label htmlFor={field.name} className="font-medium text-[#062244]">{field.label}</Label>
           <Input
             id={field.name}
             name={field.name}
@@ -71,14 +73,14 @@ export function SignUpForm({ defaultRole }: { defaultRole?: "client" | "professi
             defaultValue={values?.[field.name]}
             aria-invalid={Boolean(errors?.[field.name])}
             aria-describedby={`${field.name}-error`}
-            className="h-10"
+            className="h-12"
           />
           <FieldError id={`${field.name}-error`} messages={errors?.[field.name]} />
         </div>
       ))}
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="password">Contraseña</Label>
+        <Label htmlFor="password" className="font-medium text-[#062244]">Contraseña</Label>
         <Input
           id="password"
           name="password"
@@ -88,18 +90,18 @@ export function SignUpForm({ defaultRole }: { defaultRole?: "client" | "professi
           minLength={8}
           aria-invalid={Boolean(errors?.password)}
           aria-describedby="password-error"
-          className="h-10"
+          className="h-12"
         />
         <FieldError id="password-error" messages={errors?.password} />
       </div>
 
-      <Button type="submit" size="lg" className="h-10" disabled={pending}>
+      <Button type="submit" size="default" className="w-full text-base font-semibold shadow-sm" disabled={pending}>
         {pending ? "Creando cuenta…" : "Crear cuenta"}
       </Button>
 
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-sm text-[#5B6B7F]">
         ¿Ya tienes cuenta?{" "}
-        <Link href="/login" className="font-medium text-foreground underline underline-offset-4">
+        <Link href="/login" className="font-semibold text-[#0165F0] hover:underline">
           Ingresa
         </Link>
       </p>

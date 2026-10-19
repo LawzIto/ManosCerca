@@ -21,17 +21,27 @@ export default async function RequestsPage() {
   if (error) throw error;
 
   return (
-    <>
+    <div className="flex flex-col gap-6">
       <header className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold tracking-tight">Mis solicitudes</h1>
-        <Link href="/solicitudes/nueva" className={buttonVariants({ size: "sm" })}>
-          <Plus aria-hidden />
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-[#062244]">Mis solicitudes</h1>
+          <p className="text-sm text-[#5B6B7F]">Revisa el estado y cotizaciones de tus pedidos</p>
+        </div>
+        <Link
+          href="/solicitudes/nueva"
+          className={buttonVariants({
+            variant: "default",
+            size: "sm",
+            className: "font-semibold shadow-sm",
+          })}
+        >
+          <Plus className="size-4" aria-hidden />
           Nueva
         </Link>
       </header>
 
       {requests.length > 0 ? (
-        <ul className="flex flex-col gap-2">
+        <ul className="flex flex-col gap-3">
           {requests.map((request) => (
             <li key={request.id}>
               <RequestCard request={request} />
@@ -39,10 +49,24 @@ export default async function RequestsPage() {
           ))}
         </ul>
       ) : (
-        <p className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
-          Aún no has pedido ningún servicio.
-        </p>
+        <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-[#D0D9E8] bg-white p-10 text-center shadow-xs">
+          <p className="font-semibold text-base text-[#062244]">No tienes solicitudes activas</p>
+          <p className="mt-1 text-sm text-[#5B6B7F] max-w-xs">
+            Publica lo que necesitas arreglar y los profesionales de tu barrio te enviarán cotizaciones.
+          </p>
+          <Link
+            href="/solicitudes/nueva"
+            className={buttonVariants({
+              variant: "default",
+              size: "default",
+              className: "mt-5 font-semibold shadow-sm",
+            })}
+          >
+            <Plus className="size-4" aria-hidden />
+            Pedir mi primer servicio
+          </Link>
+        </div>
       )}
-    </>
+    </div>
   );
 }

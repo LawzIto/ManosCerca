@@ -20,24 +20,26 @@ export function RequestCard({ request, href }: { request: RequestCardData; href?
   return (
     <Link
       href={href ?? `/solicitudes/${request.id}`}
-      className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50"
+      className="group flex items-center gap-4 rounded-3xl border border-[#EAF2FF] bg-white p-5 shadow-[0_4px_20px_rgba(6,34,68,0.05)] transition-all hover:border-[#0165F0]/30 hover:shadow-[0_8px_24px_rgba(6,34,68,0.08)] active:scale-[0.99]"
     >
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-muted">
-        <CategoryIcon slug={request.category?.slug ?? ""} className="size-5" />
+      <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#EAF2FF] text-[#062244] transition-colors group-hover:bg-[#0165F0] group-hover:text-white">
+        <CategoryIcon slug={request.category?.slug ?? ""} className="size-6" />
       </span>
-      <span className="flex min-w-0 flex-1 flex-col gap-1">
-        <span className="truncate font-medium">{request.title}</span>
-        <span className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+      <span className="flex min-w-0 flex-1 flex-col gap-1.5">
+        <span className="truncate text-base font-semibold text-[#062244]">
+          {request.title}
+        </span>
+        <span className="flex flex-wrap items-center gap-2 text-xs text-[#5B6B7F]">
           <StatusBadge status={request.status} />
           {request.status === "pendiente" && (
-            <span>
-              {proposalCount === 1 ? "1 cotización" : `${proposalCount} cotizaciones`}
+            <span className="font-medium text-[#0165F0]">
+              {proposalCount === 1 ? "1 cotización recibida" : `${proposalCount} cotizaciones recibidas`}
             </span>
           )}
           <span>{formatRelativeTime(request.created_at)}</span>
         </span>
       </span>
-      <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+      <ChevronRight className="size-5 shrink-0 text-[#5B6B7F] transition-transform group-hover:translate-x-0.5 group-hover:text-[#0165F0]" aria-hidden />
     </Link>
   );
 }

@@ -20,29 +20,45 @@ export async function ContactCard({ requestId, title }: { requestId: string; tit
   if (!contact) return null;
 
   return (
-    <section className="space-y-3 rounded-lg border border-primary/30 bg-primary/5 p-4">
-      <div>
-        <p className="text-xs text-muted-foreground">{title}</p>
-        <p className="font-semibold">{contact.full_name || "Sin nombre"}</p>
+    <section className="space-y-4 rounded-3xl border border-[#0B7A4B]/25 bg-[#E6F4EA]/50 p-6 shadow-xs">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#0B7A4B]">{title}</p>
+          <p className="text-lg font-bold text-[#062244]">{contact.full_name || "Sin nombre"}</p>
+        </div>
+        <span className="flex items-center gap-1 rounded-full bg-[#E6F4EA] px-3 py-1 text-xs font-semibold text-[#0B7A4B]">
+          Contacto directo
+        </span>
       </div>
       {contact.phone ? (
-        <div className="flex gap-2">
-          <a href={`tel:${contact.phone}`} className={buttonVariants({ variant: "outline", className: "flex-1" })}>
-            <Phone aria-hidden />
+        <div className="flex gap-3">
+          <a
+            href={`tel:${contact.phone}`}
+            className={buttonVariants({
+              variant: "outline",
+              size: "default",
+              className: "flex-1 font-semibold border-2 border-[#062244] text-[#062244] hover:bg-white",
+            })}
+          >
+            <Phone className="size-4" aria-hidden />
             Llamar
           </a>
           <a
             href={`https://wa.me/${whatsappNumber(contact.phone)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className={buttonVariants({ variant: "outline", className: "flex-1" })}
+            className={buttonVariants({
+              variant: "default",
+              size: "default",
+              className: "flex-1 font-semibold bg-[#0B7A4B] hover:brightness-95 text-white shadow-sm",
+            })}
           >
-            <MessageCircle aria-hidden />
+            <MessageCircle className="size-4" aria-hidden />
             WhatsApp
           </a>
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground">No registró un teléfono.</p>
+        <p className="text-sm text-[#5B6B7F]">No registró un teléfono de contacto.</p>
       )}
     </section>
   );

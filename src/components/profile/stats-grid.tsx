@@ -34,12 +34,15 @@ export async function StatsGrid({ profile }: { profile: Profile }) {
   ];
 
   return (
-    <dl className="grid grid-cols-2 gap-2">
+    <dl className="grid grid-cols-2 gap-3">
       {items.map(({ label, value, hint }) => (
-        <div key={label} className="rounded-lg border p-3">
-          <dt className="text-xs text-muted-foreground">{label}</dt>
-          <dd className="mt-1 text-lg font-semibold tabular-nums">{value}</dd>
-          {hint && <dd className="text-xs text-muted-foreground">{hint}</dd>}
+        <div
+          key={label}
+          className="rounded-3xl border border-[#EAF2FF] bg-white p-5 shadow-[0_4px_20px_rgba(6,34,68,0.05)] transition-all"
+        >
+          <dt className="text-xs font-medium text-[#5B6B7F]">{label}</dt>
+          <dd className="mt-1.5 text-xl font-bold text-[#062244] tabular-nums">{value}</dd>
+          {hint && <dd className="mt-0.5 text-xs text-[#5B6B7F]">{hint}</dd>}
         </div>
       ))}
     </dl>

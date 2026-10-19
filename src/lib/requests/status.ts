@@ -5,23 +5,23 @@ type RequestStatus = Enums<"request_status">;
 export const REQUEST_STATUS: Record<RequestStatus, { label: string; className: string }> = {
   pendiente: {
     label: "Esperando cotizaciones",
-    className: "bg-amber-500/15 text-amber-800 dark:text-amber-300",
+    className: "bg-[#FEF6E6] text-[#062244] border-transparent font-medium",
   },
   aceptado: {
     label: "Profesional asignado",
-    className: "bg-sky-500/15 text-sky-800 dark:text-sky-300",
+    className: "bg-[#EAF2FF] text-[#0165F0] border-transparent font-medium",
   },
   en_progreso: {
     label: "En progreso",
-    className: "bg-violet-500/15 text-violet-800 dark:text-violet-300",
+    className: "bg-[#EAF2FF] text-[#062244] border-transparent font-medium",
   },
   completado: {
     label: "Completado",
-    className: "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300",
+    className: "bg-[#E6F4EA] text-[#0B7A4B] border-transparent font-medium",
   },
   cancelado: {
     label: "Cancelado",
-    className: "bg-muted text-muted-foreground",
+    className: "bg-[#FCE8E8] text-[#D93A3F] border-transparent font-medium",
   },
 };
 

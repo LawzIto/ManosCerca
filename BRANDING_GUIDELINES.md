@@ -147,44 +147,6 @@ Todos los activos oficiales provienen de la carpeta entregada y deben organizars
 public/
 ├── brand/
 │   ├── logos/
-│   │   ├── isotipo_color.svg
-│   │   ├── isotipo_navy.svg
-│   │   ├── isotipo_negro.svg
-│   │   ├── isotipo_blanco.svg
-│   │   ├── isotipo_negativo.svg
-│   │   ├── logo_horizontal_color.svg
-│   │   ├── logo_horizontal_navy.svg
-│   │   ├── logo_horizontal_negro.svg
-│   │   ├── logo_horizontal_blanco.svg
-│   │   ├── logo_horizontal_negativo.svg
-│   │   ├── logo_vertical_color.svg
-│   │   ├── logo_vertical_negativo.svg
-│   │   ├── logo_horizontal_eslogan_color.svg
-│   │   └── logo_horizontal_eslogan_negativo.svg
-│   ├── icons/
-│   │   ├── ubicacion.svg
-│   │   ├── verificado.svg
-│   │   ├── calificacion.svg
-│   │   ├── plomeria.svg
-│   │   ├── electricidad.svg
-│   │   ├── cerrajeria.svg
-│   │   ├── hogar.svg
-│   │   ├── rapidez.svg
-│   │   ├── cotizacion.svg
-│   │   ├── privacidad.svg
-│   │   ├── mensajes.svg
-│   │   └── completado.svg
-│   ├── patterns/
-│   │   ├── pattern_cobertura_dark.svg
-│   │   ├── pattern_cobertura_light.svg
-│   │   ├── pattern_pines_dark.svg
-│   │   └── pattern_pines_light.svg
-│   └── illustrations/
-│       ├── ilus_tecnico_cerca.svg
-│       ├── ilus_identidad_verificada.svg
-│       └── ilus_cotizaciones_reales.svg
-├── icons/ (PWA Icons)
-│   ├── icono_app_192.png
-│   ├── icono_app_512.png
-│   └── icono_app_maskable_512.png
-└── favicon.ico (o favicon_48.png)
+        Iconos_app
+        logos_PNG_transparente
+        Logos_SVG

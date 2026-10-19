@@ -21,7 +21,7 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
       {alert && <FormAlert variant="error">{alert}</FormAlert>}
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="email">Correo</Label>
+        <Label htmlFor="email" className="font-medium text-[#062244]">Correo</Label>
         <Input
           id="email"
           name="email"
@@ -32,13 +32,13 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
           defaultValue={state.values?.email}
           aria-invalid={Boolean(errors?.email)}
           aria-describedby="email-error"
-          className="h-10"
+          className="h-12"
         />
         <FieldError id="email-error" messages={errors?.email} />
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="password">Contraseña</Label>
+        <Label htmlFor="password" className="font-medium text-[#062244]">Contraseña</Label>
         <Input
           id="password"
           name="password"
@@ -47,18 +47,18 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
           required
           aria-invalid={Boolean(errors?.password)}
           aria-describedby="password-error"
-          className="h-10"
+          className="h-12"
         />
         <FieldError id="password-error" messages={errors?.password} />
       </div>
 
-      <Button type="submit" size="lg" className="h-10" disabled={pending}>
+      <Button type="submit" size="default" className="w-full text-base font-semibold shadow-sm" disabled={pending}>
         {pending ? "Ingresando…" : "Ingresar"}
       </Button>
 
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-sm text-[#5B6B7F]">
         ¿No tienes cuenta?{" "}
-        <Link href="/registro" className="font-medium text-foreground underline underline-offset-4">
+        <Link href="/registro" className="font-semibold text-[#0165F0] hover:underline">
           Regístrate
         </Link>
       </p>

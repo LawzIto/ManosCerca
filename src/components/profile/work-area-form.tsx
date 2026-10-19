@@ -47,20 +47,21 @@ export function WorkAreaForm({
         <Button
           type="button"
           variant="outline"
+          size="default"
           onClick={locate}
           disabled={locating}
-          className="h-9 self-start"
+          className="self-start font-semibold border-2 border-[#062244] text-[#062244]"
         >
           {locating ? (
             <LoaderCircle className="animate-spin" aria-hidden />
           ) : coords ? (
-            <MapPinCheck aria-hidden />
+            <MapPinCheck className="size-4 text-[#0B7A4B]" aria-hidden />
           ) : (
-            <LocateFixed aria-hidden />
+            <LocateFixed className="size-4 text-[#0165F0]" aria-hidden />
           )}
           {coords ? "Actualizar a mi ubicación actual" : "Usar mi ubicación actual"}
         </Button>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-[#5B6B7F]">
           {geoError ??
             (located
               ? "Ubicación lista. Guarda para aplicarla."
@@ -72,7 +73,7 @@ export function WorkAreaForm({
       </div>
 
       <fieldset className="flex flex-col gap-2">
-        <legend className="mb-2 text-sm font-medium">Distancia máxima</legend>
+        <legend className="mb-2 text-sm font-semibold text-[#062244]">Distancia máxima</legend>
         <div className="flex flex-wrap gap-2">
           {WORK_RADIUS_OPTIONS.map((km) => (
             <label key={km} className="cursor-pointer">
@@ -83,7 +84,7 @@ export function WorkAreaForm({
                 defaultChecked={radius === km}
                 className="peer sr-only"
               />
-              <span className="flex rounded-full border px-3 py-1 text-sm transition-colors peer-checked:border-primary peer-checked:bg-primary peer-checked:text-primary-foreground peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50">
+              <span className="flex rounded-full border border-[#D0D9E8] bg-white px-4 py-1.5 text-sm font-medium text-[#062244] transition-all peer-checked:border-[#0165F0] peer-checked:bg-[#0165F0] peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-[#0165F0]/30 shadow-2xs">
                 {km} km
               </span>
             </label>
@@ -91,7 +92,7 @@ export function WorkAreaForm({
         </div>
       </fieldset>
 
-      <Button type="submit" variant="outline" className="h-10" disabled={pending || !coords}>
+      <Button type="submit" variant="default" size="default" className="w-full font-semibold shadow-sm" disabled={pending || !coords}>
         {pending ? "Guardando…" : "Guardar zona de trabajo"}
       </Button>
     </form>

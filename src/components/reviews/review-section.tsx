@@ -27,18 +27,18 @@ export async function ReviewSection({
   const received = reviews.find((review) => review.reviewer_id !== userId);
 
   return (
-    <section className="space-y-4 rounded-lg border p-4">
+    <section className="space-y-5 rounded-3xl border border-[#EAF2FF] bg-white p-6 shadow-[0_4px_20px_rgba(6,34,68,0.05)]">
       {given ? (
-        <div className="space-y-1.5">
-          <h2 className="font-semibold">Tu calificación</h2>
+        <div className="space-y-2">
+          <h2 className="text-base font-bold text-[#062244]">Tu calificación</h2>
           <Stars rating={given.rating} />
-          {given.comment && <p className="text-sm text-muted-foreground">{given.comment}</p>}
+          {given.comment && <p className="text-sm text-[#5B6B7F]">{given.comment}</p>}
         </div>
       ) : (
         <div className="space-y-3">
           <div className="text-center">
-            <h2 className="text-lg font-semibold">¡Servicio completado!</h2>
-            <p className="text-sm text-muted-foreground">
+            <h2 className="text-lg font-bold text-[#062244]">¡Servicio completado!</h2>
+            <p className="text-sm text-[#5B6B7F]">
               Tu calificación ayuda a toda la comunidad.
             </p>
           </div>
@@ -46,22 +46,22 @@ export async function ReviewSection({
         </div>
       )}
 
-      <div className="space-y-1.5 border-t pt-4">
-        <h2 className="text-sm font-semibold">Calificación de {counterpartName}</h2>
+      <div className="space-y-2 border-t border-[#EAF2FF] pt-4">
+        <h2 className="text-sm font-semibold text-[#062244]">Calificación de {counterpartName}</h2>
         {received ? (
           <>
             <div className="flex items-center gap-2">
               <Stars rating={received.rating} />
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-[#5B6B7F]">
                 {formatRelativeTime(received.created_at)}
               </span>
             </div>
             {received.comment && (
-              <p className="text-sm text-muted-foreground">{received.comment}</p>
+              <p className="text-sm text-[#5B6B7F]">{received.comment}</p>
             )}
           </>
         ) : (
-          <p className="text-sm text-muted-foreground">Aún no te ha calificado.</p>
+          <p className="text-sm text-[#5B6B7F]">Aún no te ha calificado.</p>
         )}
       </div>
     </section>

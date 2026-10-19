@@ -36,10 +36,10 @@ export function AppNav({ role }: { role: Enums<"user_role"> }) {
           href={href}
           aria-current={active === href ? "page" : undefined}
           className={cn(
-            "shrink-0 border-b-2 px-3 py-2 text-sm font-medium transition-colors",
+            "shrink-0 border-b-2 py-3 px-3.5 text-sm font-medium transition-colors min-h-[44px] flex items-center",
             active === href
-              ? "border-primary text-foreground"
-              : "border-transparent text-muted-foreground hover:text-foreground",
+              ? "border-[#0165F0] text-[#0165F0] font-semibold"
+              : "border-transparent text-[#5B6B7F] hover:text-[#062244]",
           )}
         >
           {label}
