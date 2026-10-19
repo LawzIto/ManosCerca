@@ -18,7 +18,7 @@ export default async function Home() {
       <div className="space-y-6">
         <header className="space-y-4 text-center">
           <div className="flex justify-center">
-            <BrandLogo variant="horizontal" color="color" className="h-11 w-auto" priority />
+            <BrandLogo variant="horizontal" color="color" className="h-14 w-auto" priority />
           </div>
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tight text-[#062244]">

@@ -45,7 +45,7 @@ export function BrandLogo({
 
   // Dimensiones por defecto según proporción del manual de identidad
   const defaultDimensions = {
-    horizontal: { width: 140, height: 40 },
+    horizontal: { width: 160, height: 46 },
     vertical: { width: 120, height: 74 },
     "horizontal-slogan": { width: 180, height: 52 },
     "vertical-slogan": { width: 140, height: 86 },
