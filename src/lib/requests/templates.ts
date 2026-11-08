@@ -142,3 +142,4 @@ export const CATEGORY_TEMPLATES: Record<string, QuickTemplate[]> = {
     },
   ],
 };
+

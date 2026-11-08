@@ -22,11 +22,13 @@ export const metadata: Metadata = {
   applicationName: "ManosCerca",
   icons: {
     icon: [
-      { url: "/brand/iconos_app/favicon_48.png", sizes: "48x48", type: "image/png" },
-      { url: "/brand/logos_SVG/isotipo_color.svg", type: "image/svg+xml" },
+      { url: "/icons/favicon-48.png?v=2", sizes: "48x48", type: "image/png" },
+      { url: "/icons/icon-192.png?v=2", sizes: "192x192", type: "image/png" },
+      { url: "/brand/logos_SVG/isotipo_color.svg?v=2", type: "image/svg+xml" },
     ],
+    shortcut: "/icons/favicon-48.png?v=2",
     apple: [
-      { url: "/brand/iconos_app/icono_app_192_fondo_azul.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/apple-touch-icon.png?v=2", sizes: "180x180", type: "image/png" },
     ],
   },
 };
