@@ -1,7 +1,7 @@
 "use client";
 
-import { LoaderCircle, LocateFixed, MapPinCheck } from "lucide-react";
-import { useActionState } from "react";
+import { LoaderCircle, LocateFixed, MapPinCheck, Sparkles } from "lucide-react";
+import { useActionState, useState } from "react";
 
 import { CategoryIcon } from "@/components/category-icon";
 import { FieldError, FormAlert } from "@/components/form-message";
@@ -14,6 +14,7 @@ import { useGeolocation } from "@/hooks/use-geolocation";
 import { CURRENCY } from "@/lib/format";
 import { createServiceRequest } from "@/lib/requests/actions";
 import type { RequestFormState } from "@/lib/requests/schemas";
+import { CATEGORY_TEMPLATES, type QuickTemplate } from "@/lib/requests/templates";
 import { useLocationStore } from "@/stores/location-store";
 import type { Tables } from "@/types/database";
 
@@ -33,10 +34,24 @@ export function RequestForm({
   const errors = state.fieldErrors;
   const values = state.values;
 
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | undefined>(
+    values?.categoryId ? Number(values.categoryId) : defaultCategoryId,
+  );
+  const [title, setTitle] = useState(values?.title ?? "");
+  const [description, setDescription] = useState(values?.description ?? "");
+
   const { coords, setCoords } = useLocationStore();
   const { locate, locating, error: geoError } = useGeolocation(setCoords);
 
-  const selectedCategory = values?.categoryId ?? defaultCategoryId?.toString();
+  const selectedCategoryObj = categories.find((c) => c.id === selectedCategoryId);
+  const availableTemplates: QuickTemplate[] = selectedCategoryObj
+    ? CATEGORY_TEMPLATES[selectedCategoryObj.slug] ?? []
+    : [];
+
+  const applyTemplate = (template: QuickTemplate) => {
+    setTitle(template.title);
+    setDescription(template.description);
+  };
 
   return (
     <form action={formAction} className="flex flex-col gap-5" noValidate>
@@ -51,7 +66,8 @@ export function RequestForm({
                 type="radio"
                 name="categoryId"
                 value={category.id}
-                defaultChecked={selectedCategory === category.id.toString()}
+                checked={selectedCategoryId === category.id}
+                onChange={() => setSelectedCategoryId(category.id)}
                 className="peer sr-only"
               />
               <span className="flex h-full flex-col items-center gap-1.5 rounded-lg border p-3 text-center transition-colors peer-checked:border-primary peer-checked:bg-primary/5 peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50">
@@ -64,6 +80,28 @@ export function RequestForm({
         <FieldError id="categoryId-error" messages={errors?.categoryId} />
       </fieldset>
 
+      {/* Sugerencias rápidas basadas en la categoría elegida */}
+      {availableTemplates.length > 0 && (
+        <div className="flex flex-col gap-2 rounded-2xl border border-primary/20 bg-primary/5 p-3.5">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
+            <Sparkles className="size-3.5" aria-hidden />
+            <span>Opciones rápidas para autocompletar:</span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {availableTemplates.map((template) => (
+              <button
+                key={template.label}
+                type="button"
+                onClick={() => applyTemplate(template)}
+                className="rounded-full border border-primary/25 bg-white px-3 py-1 text-xs font-medium text-[#062244] shadow-xs transition-colors hover:border-primary hover:bg-primary/10 active:scale-95"
+              >
+                + {template.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-2">
         <Label htmlFor="title">Título</Label>
         <Input
@@ -72,7 +110,8 @@ export function RequestForm({
           placeholder="Ej.: Fuga de agua en el lavadero"
           maxLength={120}
           required
-          defaultValue={values?.title}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           aria-invalid={Boolean(errors?.title)}
           aria-describedby="title-error"
           className="h-10"
@@ -89,7 +128,8 @@ export function RequestForm({
           rows={4}
           maxLength={2000}
           required
-          defaultValue={values?.description}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           aria-invalid={Boolean(errors?.description)}
           aria-describedby="description-error"
         />
