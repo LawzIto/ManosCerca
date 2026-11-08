@@ -276,6 +276,32 @@ export type Database = {
           },
         ];
       };
+      tracking_locations: {
+        Row: {
+          request_id: string;
+          worker_latitude: number;
+          worker_longitude: number;
+          updated_at: string;
+        };
+        Insert: {
+          request_id: string;
+          worker_latitude: number;
+          worker_longitude: number;
+        };
+        Update: {
+          worker_latitude?: number;
+          worker_longitude?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "tracking_locations_request_id_fkey";
+            columns: ["request_id"];
+            isOneToOne: true;
+            referencedRelation: "service_requests";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       reviews: {
         Row: {
           id: string;

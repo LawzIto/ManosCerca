@@ -12,6 +12,7 @@ import { RequestSummary } from "@/components/requests/request-summary";
 import { ServiceStepper } from "@/components/requests/service-stepper";
 import { ReviewSection } from "@/components/reviews/review-section";
 import { Stars } from "@/components/reviews/stars";
+import { ClientTrackingMap } from "@/components/tracking/client-tracking-map";
 import { requireRole } from "@/lib/auth/session";
 import { formatCurrency } from "@/lib/format";
 import { acceptProposal, cancelServiceRequest } from "@/lib/requests/actions";
@@ -30,7 +31,7 @@ export default async function RequestDetailPage({ params }: PageProps<"/solicitu
   const { data: request, error } = await supabase
     .from("service_requests")
     .select(
-      `id, title, description, address, budget_estimate, image_urls, status, created_at, professional_id,
+      `id, title, description, address, latitude, longitude, budget_estimate, image_urls, status, created_at, professional_id,
        category:categories(slug, name),
        proposals!proposals_request_id_fkey(
          id, price, message, eta_minutes, status, created_at,
@@ -46,10 +47,23 @@ export default async function RequestDetailPage({ params }: PageProps<"/solicitu
   if (!request) notFound();
 
   const isOpen = request.status === "pendiente";
+  const isActive = request.status === "aceptado" || request.status === "en_progreso";
   // Abierta: las cotizaciones vigentes. Después: solo la aceptada.
   const proposals = request.proposals.filter((proposal) =>
     isOpen ? proposal.status === "pendiente" : proposal.status === "aceptada",
   );
+
+  // Cargar ubicación actual del trabajador (para pre-poblar el mapa sin esperar Realtime)
+  const { data: initialTracking } = isActive
+    ? await supabase
+        .from("tracking_locations")
+        .select("worker_latitude, worker_longitude")
+        .eq("request_id", request.id)
+        .maybeSingle()
+    : { data: null };
+
+  const acceptedProposal = proposals[0];
+  const workerName = acceptedProposal?.professional?.full_name ?? "el profesional";
 
   return (
     <div className="flex flex-col gap-6">
@@ -78,6 +92,18 @@ export default async function RequestDetailPage({ params }: PageProps<"/solicitu
       {isOpen && <TrustBanner />}
 
       <ContactCard requestId={request.id} title="Tu profesional asignado" />
+
+      {/* Mapa de seguimiento: visible cuando el servicio fue aceptado o está en progreso */}
+      {isActive && (
+        <ClientTrackingMap
+          requestId={request.id}
+          workerName={workerName}
+          clientAddress={request.address}
+          clientLat={request.latitude}
+          clientLng={request.longitude}
+          initialTracking={initialTracking}
+        />
+      )}
 
       {request.status === "completado" && request.professional_id && (
         <ReviewSection

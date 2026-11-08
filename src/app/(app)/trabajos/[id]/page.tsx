@@ -10,6 +10,7 @@ import { RealtimeRefresh } from "@/components/realtime-refresh";
 import { ContactCard } from "@/components/requests/contact-card";
 import { RequestSummary } from "@/components/requests/request-summary";
 import { ReviewSection } from "@/components/reviews/review-section";
+import { WorkerTracker } from "@/components/tracking/worker-tracker";
 import { requireRole } from "@/lib/auth/session";
 import { formatCurrency } from "@/lib/format";
 import { withdrawProposal } from "@/lib/proposals/actions";
@@ -31,7 +32,7 @@ export default async function JobDetailPage({ params }: PageProps<"/trabajos/[id
   const { data: job, error } = await supabase
     .from("service_requests")
     .select(
-      `id, title, description, address, budget_estimate, image_urls, status, created_at, professional_id, distance_km,
+      `id, title, description, address, latitude, longitude, budget_estimate, image_urls, status, created_at, professional_id, distance_km,
        category:categories(slug, name),
        client:profiles!service_requests_client_id_fkey(full_name, rating_avg, rating_count),
        proposals!proposals_request_id_fkey(id, price, message, eta_minutes, status)`,
@@ -85,7 +86,7 @@ export default async function JobDetailPage({ params }: PageProps<"/trabajos/[id
             counterpartName={job.client?.full_name || "el cliente"}
           />
         ) : (
-          <AssignedJobActions jobId={job.id} status={job.status} />
+          <AssignedJobActions jobId={job.id} status={job.status} clientLat={job.latitude} clientLng={job.longitude} clientAddress={job.address} />
         )
       ) : myProposal?.status === "pendiente" ? (
         <section className="space-y-3 rounded-lg border p-4">
@@ -136,7 +137,13 @@ export default async function JobDetailPage({ params }: PageProps<"/trabajos/[id
   );
 }
 
-function AssignedJobActions({ jobId, status }: { jobId: string; status: Enums<"request_status"> }) {
+function AssignedJobActions({ jobId, status, clientLat, clientLng, clientAddress }: {
+  jobId: string;
+  status: Enums<"request_status">;
+  clientLat?: number | null;
+  clientLng?: number | null;
+  clientAddress: string;
+}) {
   if (status === "cancelado") {
     return (
       <p className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
@@ -148,6 +155,17 @@ function AssignedJobActions({ jobId, status }: { jobId: string; status: Enums<"r
   return (
     <>
       <ContactCard requestId={jobId} title="Contacto del cliente" />
+
+      {/* Tracker de ubicación: visible cuando el trabajo fue aceptado o está en progreso */}
+      {(status === "aceptado" || status === "en_progreso") && (
+        <WorkerTracker
+          requestId={jobId}
+          clientLat={clientLat}
+          clientLng={clientLng}
+          clientAddress={clientAddress}
+        />
+      )}
+
       {status === "aceptado" ? (
         <ActionButton
           size="lg"
