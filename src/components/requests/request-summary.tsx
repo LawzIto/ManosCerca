@@ -1,4 +1,5 @@
 import { MapPin, Wallet } from "lucide-react";
+import Image from "next/image";
 
 import { CategoryIcon } from "@/components/category-icon";
 import { StatusBadge } from "@/components/requests/status-badge";
@@ -7,7 +8,7 @@ import type { Tables } from "@/types/database";
 
 type Request = Pick<
   Tables<"service_requests">,
-  "title" | "description" | "address" | "budget_estimate" | "status" | "created_at"
+  "title" | "description" | "address" | "budget_estimate" | "image_urls" | "status" | "created_at"
 > &
   Partial<Pick<Tables<"service_requests">, "distance_km">> & {
     category: Pick<Tables<"categories">, "slug" | "name"> | null;
@@ -64,6 +65,30 @@ export function RequestSummary({ request }: { request: Request }) {
             </p>
           )}
         </div>
+
+        {request.image_urls && request.image_urls.length > 0 && (
+          <div>
+            <p className="mb-2 text-xs font-medium text-[#5B6B7F]">Fotos del problema</p>
+            <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4" aria-label="Fotos del problema">
+              {request.image_urls.map((url, i) => (
+                <li
+                  key={url}
+                  className="relative aspect-square overflow-hidden rounded-xl border border-[#EAF2FF] bg-[#F3F6FA]"
+                >
+                  <a href={url} target="_blank" rel="noopener noreferrer" aria-label={`Ver foto ${i + 1}`}>
+                    <Image
+                      src={url}
+                      alt={`Foto del problema ${i + 1}`}
+                      fill
+                      className="object-cover transition-opacity hover:opacity-90"
+                      sizes="(max-width: 640px) 50vw, 25vw"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );

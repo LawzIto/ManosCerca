@@ -5,6 +5,7 @@ import { useActionState } from "react";
 
 import { CategoryIcon } from "@/components/category-icon";
 import { FieldError, FormAlert } from "@/components/form-message";
+import { ImageUploader } from "@/components/requests/image-uploader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -154,6 +155,18 @@ export function RequestForm({
           className="h-10"
         />
         <FieldError id="budgetEstimate-error" messages={errors?.budgetEstimate} />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label>
+          Fotos del problema{" "}
+          <span className="font-normal text-muted-foreground">(opcional)</span>
+        </Label>
+        <p className="text-xs text-muted-foreground -mt-1">
+          Las imágenes ayudan a los profesionales a cotizar mejor y llegar preparados.
+        </p>
+        <ImageUploader fieldName="imageUrl" />
+        <FieldError id="imageUrl-error" messages={errors?.imageUrls} />
       </div>
 
       <Button type="submit" size="lg" className="h-11" disabled={pending}>

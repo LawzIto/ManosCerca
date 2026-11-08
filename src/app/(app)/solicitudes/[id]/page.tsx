@@ -30,7 +30,7 @@ export default async function RequestDetailPage({ params }: PageProps<"/solicitu
   const { data: request, error } = await supabase
     .from("service_requests")
     .select(
-      `id, title, description, address, budget_estimate, status, created_at, professional_id,
+      `id, title, description, address, budget_estimate, image_urls, status, created_at, professional_id,
        category:categories(slug, name),
        proposals!proposals_request_id_fkey(
          id, price, message, eta_minutes, status, created_at,

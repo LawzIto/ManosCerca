@@ -21,6 +21,7 @@ type ServiceRequestRow = {
   latitude: number | null;
   longitude: number | null;
   budget_estimate: number | null;
+  image_urls: string[];
   status: Database["public"]["Enums"]["request_status"];
   scheduled_at: string | null;
   started_at: string | null;
@@ -188,6 +189,7 @@ export type Database = {
           latitude?: number | null;
           longitude?: number | null;
           budget_estimate?: number | null;
+          image_urls?: string[];
           scheduled_at?: string | null;
         };
         Update: {
@@ -197,6 +199,7 @@ export type Database = {
           latitude?: number | null;
           longitude?: number | null;
           budget_estimate?: number | null;
+          image_urls?: string[];
           scheduled_at?: string | null;
         };
         Relationships: [

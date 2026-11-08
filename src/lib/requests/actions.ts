@@ -24,6 +24,9 @@ export async function createServiceRequest(
   const { categoryId, title, description, address, budgetEstimate, latitude, longitude } =
     parsed.data;
 
+  // Las imágenes ya fueron subidas al storage desde el cliente; solo guardamos las URLs.
+  const imageUrls = formData.getAll("imageUrl").map(String).filter(Boolean).slice(0, 4);
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("service_requests")
@@ -36,6 +39,7 @@ export async function createServiceRequest(
       budget_estimate: budgetEstimate ?? null,
       latitude: latitude ?? null,
       longitude: longitude ?? null,
+      image_urls: imageUrls,
     })
     .select("id")
     .single();
