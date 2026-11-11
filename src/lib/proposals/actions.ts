@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { requireRole } from "@/lib/auth/session";
 import { proposalSchema, type ProposalFormState } from "@/lib/proposals/schemas";
+import { isValidUuid } from "@/lib/security/validators";
 import { createClient } from "@/lib/supabase/server";
 
 const FORM_KEYS = ["price", "etaMinutes", "message"];
@@ -63,16 +64,25 @@ export async function withdrawProposal(
   proposalId: string,
   requestId: string,
 ): Promise<{ error?: string }> {
-  await requireRole("professional");
+  if (!isValidUuid(proposalId) || !isValidUuid(requestId)) {
+    return { error: "Identificador no válido." };
+  }
+
+  const profile = await requireRole("professional");
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data, error, count } = await supabase
     .from("proposals")
-    .update({ status: "retirada" })
-    .eq("id", proposalId);
+    .update({ status: "retirada" }, { count: "exact" })
+    .eq("id", proposalId)
+    .eq("professional_id", profile.id)
+    .select("id");
 
   if (error) {
     console.error("withdrawProposal", error);
     return { error: "No se pudo retirar la cotización." };
+  }
+  if (count === 0 || !data || data.length === 0) {
+    return { error: "No se encontró la cotización o no te pertenece." };
   }
 
   revalidateJob(requestId);

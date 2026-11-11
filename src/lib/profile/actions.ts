@@ -12,6 +12,7 @@ import {
   type ProfileFormState,
   workAreaSchema,
 } from "@/lib/profile/schemas";
+import { hasValidImageMagicBytes } from "@/lib/security/validators";
 import { createClient } from "@/lib/supabase/server";
 
 const FORM_KEYS = ["fullName", "phone", "bio"];
@@ -30,6 +31,9 @@ export async function updateProfile(
   const hasAvatar = avatar instanceof File && avatar.size > 0;
   if (hasAvatar && !AVATAR_TYPES.includes(avatar.type)) {
     return { fieldErrors: { avatar: ["Usa una imagen JPG, PNG o WebP"] }, values };
+  }
+  if (hasAvatar && !(await hasValidImageMagicBytes(avatar))) {
+    return { fieldErrors: { avatar: ["El archivo no es una imagen válida (JPG, PNG o WebP)"] }, values };
   }
   if (hasAvatar && avatar.size > AVATAR_MAX_BYTES) {
     return { fieldErrors: { avatar: ["La imagen no puede pesar más de 2 MB"] }, values };

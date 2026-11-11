@@ -48,7 +48,8 @@ grant execute on function public.get_request_contact(uuid) to authenticated;
 --    La restricción unique (request_id, professional_id) impide insertar otra;
 --    se permite reactivar la retirada mientras la solicitud siga pendiente.
 -- =============================================================================
-drop policy "proposals: el profesional edita o retira su propuesta pendiente" on public.proposals;
+drop policy if exists "proposals: el profesional edita o retira su propuesta pendiente" on public.proposals;
+drop policy if exists "proposals: el profesional edita, retira o reactiva su propuesta" on public.proposals;
 
 create policy "proposals: el profesional edita, retira o reactiva su propuesta"
   on public.proposals for update to authenticated

@@ -6,6 +6,7 @@ import { z } from "zod";
 
 import { requireRole } from "@/lib/auth/session";
 import { createRequestSchema, type RequestFormState } from "@/lib/requests/schemas";
+import { isValidUuid, sanitizeRequestImageUrls } from "@/lib/security/validators";
 import { createClient } from "@/lib/supabase/server";
 
 const FORM_KEYS = ["categoryId", "title", "description", "address", "budgetEstimate"];
@@ -24,8 +25,8 @@ export async function createServiceRequest(
   const { categoryId, title, description, address, budgetEstimate, latitude, longitude } =
     parsed.data;
 
-  // Las imágenes ya fueron subidas al storage desde el cliente; solo guardamos las URLs.
-  const imageUrls = formData.getAll("imageUrl").map(String).filter(Boolean).slice(0, 4);
+  // Las imágenes ya fueron subidas al storage desde el cliente; sanitizamos y guardamos las URLs.
+  const imageUrls = sanitizeRequestImageUrls(formData.getAll("imageUrl"));
 
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -54,6 +55,7 @@ export async function createServiceRequest(
 }
 
 export async function cancelServiceRequest(requestId: string): Promise<{ error?: string }> {
+  if (!isValidUuid(requestId)) return { error: "ID de solicitud no válido." };
   await requireRole("client");
   const supabase = await createClient();
   const { error } = await supabase.rpc("update_request_status", {
@@ -75,6 +77,9 @@ export async function acceptProposal(
   proposalId: string,
   requestId: string,
 ): Promise<{ error?: string }> {
+  if (!isValidUuid(proposalId) || !isValidUuid(requestId)) {
+    return { error: "Identificador no válido." };
+  }
   await requireRole("client");
   const supabase = await createClient();
   const { error } = await supabase.rpc("accept_proposal", { p_proposal_id: proposalId });
@@ -94,6 +99,7 @@ export async function updateJobStatus(
   requestId: string,
   status: "en_progreso" | "completado",
 ): Promise<{ error?: string }> {
+  if (!isValidUuid(requestId)) return { error: "ID de solicitud no válido." };
   await requireRole("professional");
   const supabase = await createClient();
   const { error } = await supabase.rpc("update_request_status", {

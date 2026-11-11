@@ -5,11 +5,19 @@ import Image from "next/image";
 import { useCallback, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { hasValidImageMagicBytes } from "@/lib/security/validators";
 import { createClient } from "@/lib/supabase/client";
 
 const MAX_FILES = 4;
 const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 const ACCEPTED = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+
+const MIME_TO_EXT: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+};
 
 interface UploadedImage {
   url: string;
@@ -33,7 +41,7 @@ export function ImageUploader({ fieldName = "imageUrl", onChange }: Props) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("No autenticado");
 
-    const ext = file.name.split(".").pop() ?? "jpg";
+    const ext = MIME_TO_EXT[file.type] ?? "jpg";
     const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
 
     const { error: uploadError } = await supabase.storage
@@ -69,6 +77,14 @@ export function ImageUploader({ fieldName = "imageUrl", onChange }: Props) {
         return;
       }
 
+      for (const file of toUpload) {
+        const isValid = await hasValidImageMagicBytes(file);
+        if (!isValid) {
+          setError("El archivo seleccionado no es una imagen válida (JPEG, PNG, WEBP o GIF).");
+          return;
+        }
+      }
+
       setUploading(true);
       try {
         const uploaded = await Promise.all(
@@ -94,6 +110,9 @@ export function ImageUploader({ fieldName = "imageUrl", onChange }: Props) {
 
   const removeImage = useCallback(
     (index: number) => {
+      const removed = images[index];
+      if (removed) URL.revokeObjectURL(removed.previewUrl);
+
       const next = images.filter((_, i) => i !== index);
       setImages(next);
       onChange?.(next.map((img) => img.url));

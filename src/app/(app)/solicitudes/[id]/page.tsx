@@ -16,6 +16,7 @@ import { ClientTrackingMap } from "@/components/tracking/client-tracking-map";
 import { requireRole } from "@/lib/auth/session";
 import { formatCurrency } from "@/lib/format";
 import { acceptProposal, cancelServiceRequest } from "@/lib/requests/actions";
+import { getSignedRequestImages } from "@/lib/requests/signed-images";
 import { CLIENT_CANCELLABLE } from "@/lib/requests/status";
 import { createClient } from "@/lib/supabase/server";
 
@@ -45,6 +46,9 @@ export default async function RequestDetailPage({ params }: PageProps<"/solicitu
 
   if (error) throw error;
   if (!request) notFound();
+
+  const signedImageUrls = await getSignedRequestImages(request.image_urls);
+  const requestWithSignedImages = { ...request, image_urls: signedImageUrls };
 
   const isOpen = request.status === "pendiente";
   const isActive = request.status === "aceptado" || request.status === "en_progreso";
@@ -87,7 +91,7 @@ export default async function RequestDetailPage({ params }: PageProps<"/solicitu
 
       <ServiceStepper currentStatus={request.status} />
 
-      <RequestSummary request={request} />
+      <RequestSummary request={requestWithSignedImages} />
 
       {isOpen && <TrustBanner />}
 

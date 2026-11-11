@@ -15,6 +15,7 @@ import { requireRole } from "@/lib/auth/session";
 import { formatCurrency } from "@/lib/format";
 import { withdrawProposal } from "@/lib/proposals/actions";
 import { updateJobStatus } from "@/lib/requests/actions";
+import { getSignedRequestImages } from "@/lib/requests/signed-images";
 import { createClient } from "@/lib/supabase/server";
 import type { Enums } from "@/types/database";
 
@@ -43,6 +44,9 @@ export default async function JobDetailPage({ params }: PageProps<"/trabajos/[id
   if (error) throw error;
   if (!job) notFound();
 
+  const signedImageUrls = await getSignedRequestImages(job.image_urls);
+  const jobWithSignedImages = { ...job, image_urls: signedImageUrls };
+
   const isAssignedToMe = job.professional_id === profile.id;
   const myProposal = job.proposals[0];
 
@@ -64,7 +68,7 @@ export default async function JobDetailPage({ params }: PageProps<"/trabajos/[id
         {isAssignedToMe ? "Mis trabajos" : "Trabajos disponibles"}
       </Link>
 
-      <RequestSummary request={job} />
+      <RequestSummary request={jobWithSignedImages} />
 
       {job.client && (
         <p className="flex items-center gap-1 text-sm text-muted-foreground">

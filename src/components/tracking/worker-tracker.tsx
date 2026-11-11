@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderCircle, MapPin, Navigation, X } from "lucide-react";
+import { MapPin, Navigation, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";

@@ -1,7 +1,7 @@
 "use client";
 
 import { LoaderCircle, MapPin, Navigation, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
@@ -30,7 +30,6 @@ interface Props {
 export function ClientTrackingMap({
   requestId,
   workerName,
-  clientAddress,
   clientLat,
   clientLng,
   initialTracking,
